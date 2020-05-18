@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Apr 2020 pada 11.43
--- Versi server: 10.1.34-MariaDB
--- Versi PHP: 7.0.31
+-- Waktu pembuatan: 18 Bulan Mei 2020 pada 07.05
+-- Versi server: 10.4.11-MariaDB
+-- Versi PHP: 7.4.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -32,9 +31,9 @@ CREATE TABLE `id_sopir` (
   `id_sopir` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
   `alamat` text NOT NULL,
-  `telepon` varchar(25) NOT NULL,
-  `sim` varchar(255) NOT NULL,
-  `tarif` varchar(255) NOT NULL
+  `telepon` int(25) NOT NULL,
+  `sim` int(25) NOT NULL,
+  `tarif` int(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -46,7 +45,7 @@ CREATE TABLE `id_sopir` (
 CREATE TABLE `kendaraan` (
   `no_plat` int(11) NOT NULL,
   `tahun` date NOT NULL,
-  `tarif` varchar(255) NOT NULL,
+  `tarif` int(25) NOT NULL,
   `status` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -60,7 +59,7 @@ CREATE TABLE `pelanggan` (
   `no_ktp` int(100) NOT NULL,
   `nama` varchar(255) NOT NULL,
   `alamat` text NOT NULL,
-  `telpon` varchar(25) NOT NULL
+  `telepon` int(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -85,9 +84,10 @@ CREATE TABLE `transaksi` (
   `tanggal_pesan` date NOT NULL,
   `tanggal_pinjam` date NOT NULL,
   `tanggal_kembali_rencana` date NOT NULL,
-  `jam_kembali_rencana` date NOT NULL,
+  `jam_kembali_rencana` time NOT NULL,
   `tanggal_kembali_realisasi` date NOT NULL,
-  `denda` varchar(255) NOT NULL,
+  `jam_kembali_realisasi` time NOT NULL,
+  `denda` int(25) NOT NULL,
   `km_pinjam` varchar(255) NOT NULL,
   `km_kembali` varchar(255) NOT NULL,
   `bbm_pinjam` varchar(255) NOT NULL,
@@ -95,8 +95,8 @@ CREATE TABLE `transaksi` (
   `kondisi_mobil_pinjam` text NOT NULL,
   `kondisi_mobil_kembali` text NOT NULL,
   `kerusakan` text NOT NULL,
-  `biaya_kerusakan` varchar(255) NOT NULL,
-  `biaya_bbm` varchar(255) NOT NULL
+  `biaya_kerusakan` int(25) NOT NULL,
+  `biaya_bbm` int(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -175,19 +175,25 @@ ALTER TABLE `transaksi`
 -- Ketidakleluasaan untuk tabel `id_sopir`
 --
 ALTER TABLE `id_sopir`
-  ADD CONSTRAINT `id_sopir_ibfk_1` FOREIGN KEY (`id_sopir`) REFERENCES `transaksi` (`no_transaksi`);
+  ADD CONSTRAINT `id_sopir_ibfk_1` FOREIGN KEY (`id_sopir`) REFERENCES `transaksi` (`no_transaksi`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ketidakleluasaan untuk tabel `kendaraan`
 --
 ALTER TABLE `kendaraan`
-  ADD CONSTRAINT `kendaraan_ibfk_1` FOREIGN KEY (`no_plat`) REFERENCES `tipe_kendaraan` (`id_type`);
+  ADD CONSTRAINT `kendaraan_ibfk_1` FOREIGN KEY (`no_plat`) REFERENCES `transaksi` (`no_transaksi`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ketidakleluasaan untuk tabel `pelanggan`
 --
 ALTER TABLE `pelanggan`
-  ADD CONSTRAINT `pelanggan_ibfk_1` FOREIGN KEY (`no_ktp`) REFERENCES `transaksi` (`no_transaksi`);
+  ADD CONSTRAINT `pelanggan_ibfk_1` FOREIGN KEY (`no_ktp`) REFERENCES `transaksi` (`no_transaksi`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Ketidakleluasaan untuk tabel `tipe_kendaraan`
+--
+ALTER TABLE `tipe_kendaraan`
+  ADD CONSTRAINT `tipe_kendaraan_ibfk_1` FOREIGN KEY (`id_type`) REFERENCES `kendaraan` (`no_plat`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Ketidakleluasaan untuk tabel `transaksi`
